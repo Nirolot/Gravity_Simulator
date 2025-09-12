@@ -1188,7 +1188,7 @@ static void find_coreGL(void) {
 #ifdef _MSC_VER
     sscanf_s(version, "%d.%d", &major, &minor);
 #else
-    std::sscanf(version, "%d.%d", &major, &minor);
+    sscanf(version, "%d.%d", &major, &minor);
 #endif
 
     GLVersion.major = major; GLVersion.minor = minor;

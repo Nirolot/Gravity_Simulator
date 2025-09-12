@@ -1,5 +1,8 @@
 ﻿#include "config.h"
 
+#define M_PI 3.14159265358979323846
+#define G 6.67e-11
+
 // Funzione per calcolare la velocità orbitale
 float calculateOrbitalVelocity(float centralMass, float distance) {
     // v = sqrt(GM/r)
