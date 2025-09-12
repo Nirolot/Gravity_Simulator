@@ -1,0 +1,43 @@
+# === Cartelle di build ===
+build/
+out/
+bin/
+obj/
+CMakeFiles/
+cmake-build-*/
+
+# === File generati da compilazione ===
+*.exe
+*.dll
+*.pdb
+*.ilk
+*.ninja
+*.log
+*.o
+*.a
+*.lib
+*.so
+*.dylib
+
+# === File di progetto IDE ===
+# Visual Studio
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.sln
+.vs/
+
+# Visual Studio Code
+.vscode/
+
+# CLion / JetBrains
+.idea/
+
+# === Altri file temporanei ===
+*.tmp
+*.cache
+*.swp
+*.bak
+
+# === Librerie esterne ===
+dependencies/
