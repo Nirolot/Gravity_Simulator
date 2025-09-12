@@ -1,3 +1,0 @@
-C:/Users/feder/OneDrive/Documenti/OpenGL/build/CMakeFiles/Gravity_simulator.dir
-C:/Users/feder/OneDrive/Documenti/OpenGL/build/CMakeFiles/edit_cache.dir
-C:/Users/feder/OneDrive/Documenti/OpenGL/build/CMakeFiles/rebuild_cache.dir
