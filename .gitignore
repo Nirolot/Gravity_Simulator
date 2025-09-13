@@ -1,13 +1,4 @@
-# === Cartelle di build ===
-build/
-out/
-bin/
-obj/
-CMakeFiles/
-cmake-build-*/
-
 # === File generati da compilazione ===
-*.exe
 *.dll
 *.pdb
 *.ilk
@@ -18,26 +9,23 @@ cmake-build-*/
 *.lib
 *.so
 *.dylib
+*.exe
 
-# === File di progetto IDE ===
-# Visual Studio
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
-*.sln
-.vs/
+# === Cartelle di build (Visual Studio / CMake) ===
+out/
+build/
+[Cc]MakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+compile_commands.json
 
-# Visual Studio Code
-.vscode/
-
-# CLion / JetBrains
-.idea/
+# === IDE ===
+.vs/                # Visual Studio
+.idea/              # CLion / JetBrains
+*.vcxproj.user      # Configurazioni utente locali
 
 # === Altri file temporanei ===
 *.tmp
 *.cache
 *.swp
 *.bak
-
-# === Librerie esterne ===
-dependencies/
