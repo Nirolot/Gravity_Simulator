@@ -20,7 +20,8 @@ cmake_install.cmake
 compile_commands.json
 
 # === IDE ===
-.vs/                # Visual Studio
+.vs/                # Visual Studio 2022
+.vscode/			# Visual Studio Code
 .idea/              # CLion / JetBrains
 *.vcxproj.user      # Configurazioni utente locali
 
