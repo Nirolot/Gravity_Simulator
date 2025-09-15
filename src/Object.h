@@ -3,15 +3,20 @@
 
 class Object {
 public:
-    std::vector<float> position;
-    std::vector<float> velocity;
+    std::vector<double> position;
+    std::vector<double> velocity;
     int radius;
-    float res;
-    int mass;
-    float dt;
-    Object(std::vector<float> position, std::vector<float> velocity, int radius, int mass);
+    double res;
+    double mass;
+    double dt;
+    bool shouldDelete;
+    Object(std::vector<double> position, std::vector<double> velocity, int radius, double mass);
 
-    void getDeltaTime(float dt);
+    void getDeltaTime(double dt);
 
     void DrawCircle();
+
+    void UpdatePos();
+
+    void CalculatePullFactor(std::vector<Object> objs);
 };

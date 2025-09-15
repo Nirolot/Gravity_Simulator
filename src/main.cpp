@@ -1,6 +1,5 @@
 ﻿#include "config.h"
-
-GLFWwindow* StartGLFW();
+#include "Object.h"
 
 int main() {
 
@@ -15,17 +14,46 @@ int main() {
     double lastTime = glfwGetTime();
 
     std::vector<Object> objs = {
-        Object({screenWidth / 2.0f, screenHeight / 2.0f}, {0.0f, 0.0f}, 30, 700),
-        Object({screenWidth / 2.0f, 1049.0f}, {0.0f, 0.0f}, 8, 700)
+        Object({screenWidth / 2.0, screenHeight / 2.0}, {0.0, 0.0}, 30, 5.994e24),
+        Object({screenWidth / 2.0, 750.0}, {1587.955f, 0.0}, 8, 7.342e22)
     };
+
+    /*for(auto& obj : objs) {
+        obj.CalculatePullFactor(objs);
+    }
+    */
 
     while(!glfwWindowShouldClose(window)) {
         double currentTime = glfwGetTime();
         double deltaTime = currentTime - lastTime;
         lastTime = currentTime;
 
-        updateDeltaTime(objs, deltaTime);
-        drawObjects(objs);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        // Update deltaTime
+        for(auto& obj : objs) {
+            obj.getDeltaTime(deltaTime);
+        }
+
+        // Calculate pulling factor
+        for(auto& obj : objs) {
+            obj.CalculatePullFactor(objs);
+        }
+
+        // Update position
+        for(auto& obj : objs) {
+            obj.UpdatePos();
+        }
+
+        // Draw object
+        for(auto& obj : objs) {
+            obj.DrawCircle();
+        }
+
+        // Close window if ESC key is pressed
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+            break; 
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -33,26 +61,4 @@ int main() {
 
     glfwTerminate();
     return 0;
-}
-
-GLFWwindow* StartGLFW() {
-    if (!glfwInit()) {
-        std::cout << "failed to initialize glfw, panic!" << std::endl;
-        return nullptr;
-    }
-
-    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
-
-    // aggiorna le variabili globali
-    screenWidth = mode->width;
-    screenHeight = mode->height;
-
-    // finestra fullscreen sul monitor primario
-    GLFWwindow* window = glfwCreateWindow(screenWidth, screenHeight, "Gravity Simulator", monitor, NULL);
-
-    glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
-
-    return window;
 }
