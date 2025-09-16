@@ -5,6 +5,7 @@ class Object {
 public:
     std::vector<double> position;
     std::vector<double> velocity;
+    std::vector<double> acc;
     int radius;
     double res;
     double mass;
@@ -12,11 +13,9 @@ public:
     bool shouldDelete;
     Object(std::vector<double> position, std::vector<double> velocity, int radius, double mass);
 
-    void getDeltaTime(double dt);
-
     void DrawCircle();
 
-    void UpdatePos();
+    void UpdatePos(const std::vector<Object>& objs);
 
-    void CalculatePullFactor(std::vector<Object> objs);
+    std::vector<double> CalculatePullFactor(const std::vector<Object>& objs);
 };

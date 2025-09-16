@@ -11,38 +11,18 @@ int main() {
     glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
     glMatrixMode(GL_MODELVIEW);
 
-    double lastTime = glfwGetTime();
-
     std::vector<Object> objs = {
         Object({screenWidth / 2.0, screenHeight / 2.0}, {0.0, 0.0}, 30, 5.994e24),
-        Object({screenWidth / 2.0, 750.0}, {1587.955f, 0.0}, 8, 7.342e22)
+        Object({screenWidth / 2.0, screenHeight / 2.0 + 509}, {1019.8, 0.0}, 8, 7.342e20)
     };
 
-    /*for(auto& obj : objs) {
-        obj.CalculatePullFactor(objs);
-    }
-    */
-
     while(!glfwWindowShouldClose(window)) {
-        double currentTime = glfwGetTime();
-        double deltaTime = currentTime - lastTime;
-        lastTime = currentTime;
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Update deltaTime
-        for(auto& obj : objs) {
-            obj.getDeltaTime(deltaTime);
-        }
-
-        // Calculate pulling factor
-        for(auto& obj : objs) {
-            obj.CalculatePullFactor(objs);
-        }
-
         // Update position
         for(auto& obj : objs) {
-            obj.UpdatePos();
+            obj.UpdatePos(objs);
         }
 
         // Draw object

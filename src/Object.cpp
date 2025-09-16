@@ -4,15 +4,13 @@
 Object::Object(std::vector<double> position, std::vector<double> velocity, int radius, double mass) {
     this->position = position;
     this->velocity = velocity;
+    this->acc = {0.0, 0.0};
     this->radius = radius;
     this->mass = mass;
     this->res = standard_res;
     this->shouldDelete = false;
+    this->dt = simulationSpeed;
 };
-
-void Object::getDeltaTime(double dt) {
-    this->dt = 8.64e3;
-}
 
 void Object::DrawCircle() {
     glBegin(GL_TRIANGLE_FAN);
@@ -29,27 +27,35 @@ void Object::DrawCircle() {
     glEnd();
 }
 
-void Object::UpdatePos() {
-    position[0] += velocity[0] * dt / scaling_factor;
-    position[1] += velocity[1] * dt / scaling_factor;
+void Object::UpdatePos(const std::vector<Object>& objs) {
+
+    // Verlet integration
+    position[0] += dt * (velocity[0] + 0.5 * acc[0] * dt) / scaling_factor;
+    position[1] += dt * (velocity[1] + 0.5 * acc[1] * dt) / scaling_factor;
+
+    std::vector<double> newAcc = CalculatePullFactor(objs);
+
+    velocity[0] += 0.5 * dt * (acc[0] + newAcc[0]);
+    velocity[1] += 0.5 * dt * (acc[1] + newAcc[1]);
+
+    acc = newAcc;
 }
 
-void Object::CalculatePullFactor(std::vector<Object> objs) {
-    for(auto& obj : objs) {
-        if(&obj != this && !obj.shouldDelete) {
+std::vector<double> Object::CalculatePullFactor(const std::vector<Object>& objs) {
+    std::vector<double> acc = {0.0, 0.0};
+
+    for (const auto& obj : objs) {
+        if (&obj != this && !obj.shouldDelete) {
             double dx = (obj.position[0] - this->position[0]) * scaling_factor;
             double dy = (obj.position[1] - this->position[1]) * scaling_factor;
             double distance = hypot(dx, dy);
 
-            if(distance > 0) {
+            if (distance > 0) {
                 double a = G * obj.mass / (distance * distance);
-                std::cout << "acc: " << a << " - Distance: {" << dx << ", " << dy << "}" << std::endl;
-                double ax = a * (dx / distance);
-                double ay = a * (dy / distance);
-
-                this->velocity[0] += ax * this->dt;
-                this->velocity[1] += ay * this->dt;
+                acc[0] += a * (dx / distance);
+                acc[1] += a * (dy / distance);
             }
         }
     }
+    return acc;
 }
