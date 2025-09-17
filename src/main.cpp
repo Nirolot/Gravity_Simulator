@@ -1,31 +1,46 @@
 ﻿#include "config.h"
 #include "Object.h"
+#include "Planets.h"
 
 int main() {
-
     GLFWwindow* window = StartGLFW();
     if (!window) return -1;
+
+    glfwSetScrollCallback(window, scroll_callback);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
     glMatrixMode(GL_MODELVIEW);
 
-    std::vector<Object> objs = {
-        Object({screenWidth / 2.0, screenHeight / 2.0}, {0.0, 0.0}, 30, 5.994e24),
-        Object({screenWidth / 2.0, screenHeight / 2.0 + 509}, {1019.8, 0.0}, 8, 7.342e20)
-    };
+    Sun sun;
+    Earth earth;
+    Moon moon;
 
-    while(!glfwWindowShouldClose(window)) {
+    std::vector<Object> objs = {sun, earth, moon};
 
+    while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
+        glLoadIdentity();
 
-        // Update position
+        // Update position PRIMA di impostare la camera
         for(auto& obj : objs) {
             obj.UpdatePos(objs);
         }
 
-        // Draw object
+        glLoadIdentity();
+
+        // ZOOM CENTRATO SULLA TERRA - Ordine corretto:
+        // 1. Prima trasla al centro dello schermo
+        glTranslated(screenWidth/2.0, screenHeight/2.0, 0);
+        
+        // 2. Applica lo zoom
+        glScaled(zoom, zoom, 1.0);
+        
+        // 3. Poi trasla per posizionare la Terra all'origine del sistema zoomato
+        glTranslated(-objs[1].position[0], -objs[1].position[1], 0);
+
+        // Draw objects
         for(auto& obj : objs) {
             obj.DrawCircle();
         }

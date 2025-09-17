@@ -10,6 +10,7 @@ add_executable(Gravity_simulator
     src/glad.c
     src/config.cpp
     src/Object.cpp
+    src/Planets.cpp
     )
 
 target_include_directories(Gravity_simulator PRIVATE dependencies/include)

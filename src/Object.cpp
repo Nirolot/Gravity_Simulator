@@ -1,12 +1,9 @@
 #include "config.h"
 #include "Object.h"
 
-Object::Object(std::vector<double> position, std::vector<double> velocity, int radius, double mass) {
-    this->position = position;
-    this->velocity = velocity;
+Object::Object(std::vector<double> position, std::vector<double> velocity, int radius, double mass)
+    : position(position), velocity(velocity), radius(radius), mass(mass) {
     this->acc = {0.0, 0.0};
-    this->radius = radius;
-    this->mass = mass;
     this->res = standard_res;
     this->shouldDelete = false;
     this->dt = simulationSpeed;
@@ -39,6 +36,8 @@ void Object::UpdatePos(const std::vector<Object>& objs) {
     velocity[1] += 0.5 * dt * (acc[1] + newAcc[1]);
 
     acc = newAcc;
+
+    //this->DrawCircle();
 }
 
 std::vector<double> Object::CalculatePullFactor(const std::vector<Object>& objs) {

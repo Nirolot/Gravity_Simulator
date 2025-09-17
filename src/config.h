@@ -9,10 +9,12 @@
 #define G 6.67e-11
 
 const double simulationSpeed = 8.64e3;
-const double scaling_factor = 7.55e5;
+const double scaling_factor = 36836935.1669941;
 const double standard_res = 50;
 
+extern double zoom;
 extern int screenWidth;
 extern int screenHeight;
 
 GLFWwindow* StartGLFW();
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
