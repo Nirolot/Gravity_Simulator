@@ -23,21 +23,14 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
         glLoadIdentity();
 
-        // Update position PRIMA di impostare la camera
+        // Update position
         for(auto& obj : objs) {
             obj.UpdatePos(objs);
         }
 
         glLoadIdentity();
-
-        // ZOOM CENTRATO SULLA TERRA - Ordine corretto:
-        // 1. Prima trasla al centro dello schermo
         glTranslated(screenWidth/2.0, screenHeight/2.0, 0);
-        
-        // 2. Applica lo zoom
         glScaled(zoom, zoom, 1.0);
-        
-        // 3. Poi trasla per posizionare la Terra all'origine del sistema zoomato
         glTranslated(-objs[1].position[0], -objs[1].position[1], 0);
 
         // Draw objects

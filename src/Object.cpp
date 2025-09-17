@@ -36,8 +36,6 @@ void Object::UpdatePos(const std::vector<Object>& objs) {
     velocity[1] += 0.5 * dt * (acc[1] + newAcc[1]);
 
     acc = newAcc;
-
-    //this->DrawCircle();
 }
 
 std::vector<double> Object::CalculatePullFactor(const std::vector<Object>& objs) {
