@@ -8,6 +8,9 @@ find_package(OpenGL REQUIRED)
 add_executable(Gravity_simulator 
     src/main.cpp    
     src/glad.c
+    src/config.cpp
+    src/Object.cpp
+    src/Planets.cpp
     )
 
 target_include_directories(Gravity_simulator PRIVATE dependencies/include)

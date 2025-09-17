@@ -4,9 +4,17 @@
 #include <cmath>
 #include <iostream>
 #include <vector>
-#include <algorithm>
 
-const float screenWidth = 800.0f;
-const float screenHeight = 600.0f;
-const float simulationSpeed = 0.01f;
-const float scaling_factor = 1e3;
+#define PI 3.14159265358979
+#define G 6.67e-11
+
+const double simulationSpeed = 8.64e3;
+const double scaling_factor = 36836935.1669941;
+const double standard_res = 50;
+
+extern double zoom;
+extern int screenWidth;
+extern int screenHeight;
+
+GLFWwindow* StartGLFW();
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
