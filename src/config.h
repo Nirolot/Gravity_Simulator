@@ -9,7 +9,7 @@
 #define G 6.67e-11
 
 const double simulationSpeed = 8.64e3;
-const double scaling_factor = 36836935.1669941;
+const double scaling_factor = 3.844e8 / 200.0; // 36836935.1669941
 const double standard_res = 50;
 
 extern double zoom;
