@@ -1,5 +1,5 @@
-#include "config.h"
-#include "Object.h"
+#include "config.hpp"
+#include "Object.hpp"
 
 Object::Object(std::vector<double> position, std::vector<double> velocity, int radius, double mass)
     : position(position), velocity(velocity), radius(radius), mass(mass) {

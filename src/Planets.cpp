@@ -1,5 +1,5 @@
-#include "Planets.h"
-#include "config.h"  
+#include "Planets.hpp"
+#include "config.hpp"  
 
 Sun::Sun() : Object(
     { screenWidth / 2.0, screenHeight / 2.0 }, 

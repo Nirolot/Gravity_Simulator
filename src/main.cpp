@@ -1,6 +1,6 @@
-#include "config.h"
-#include "Object.h"
-#include "Planets.h"
+#include "config.hpp"
+#include "Object.hpp"
+#include "Planets.hpp"
 
 int main() {
     GLFWwindow* window = StartGLFW();
