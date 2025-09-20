@@ -13,11 +13,20 @@ int main() {
     glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
     glMatrixMode(GL_MODELVIEW);
 
-    Sun sun;
-    Earth earth;
-    Moon moon;
+    std::vector<Object> objs = {
+        Object( { screenWidth / 2.0, screenHeight / 2.0 }, 
+                { 0.0, 0.0},                                    
+                int(12745594.0 / scaling_factor),
+                5.972e24
+        ),
+        Object( { screenWidth / 2.0 + (3.844e8 / scaling_factor), screenHeight / 2.0 }, 
+                { 0.0, 1019.8 }, 
+                int(3474800.0 / scaling_factor),
+                7.348e22
+        )
+    };
 
-    std::vector<Object> objs = {sun, earth, moon};
+    int i = 0;
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
@@ -31,7 +40,7 @@ int main() {
         glLoadIdentity();
         glTranslated(screenWidth/2.0, screenHeight/2.0, 0);
         glScaled(zoom, zoom, 1.0);
-        glTranslated(-objs[1].position[0], -objs[1].position[1], 0);
+        glTranslated(-objs[0].position[0], -objs[0].position[1], 0);
 
         // Draw objects
         for(auto& obj : objs) {

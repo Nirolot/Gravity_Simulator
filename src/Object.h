@@ -17,5 +17,7 @@ public:
 
     void UpdatePos(const std::vector<Object>& objs);
 
-    std::vector<double> CalculatePullFactor(const std::vector<Object>& objs);
+    std::vector<double> CalculatePullFactor(const std::vector<Object>& objs, const std::vector<double>& pos);
+
+    std::vector<double> CalculateDerivatives(const std::vector<double>& state, const std::vector<Object>& objs);
 };
