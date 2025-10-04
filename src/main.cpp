@@ -2,6 +2,10 @@
 #include "Object.hpp"
 #include "Planets.hpp"
 
+void stampa(int x) {
+    std::cout << x << std::endl;
+}
+
 int main() {
     GLFWwindow* window = StartGLFW();
     if (!window) return -1;
@@ -13,18 +17,24 @@ int main() {
     glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
     glMatrixMode(GL_MODELVIEW);
 
+    Earth earth;
+    Moon moon;
+
     std::vector<Object> objs = {
         Object( { screenWidth / 2.0, screenHeight / 2.0 }, 
                 { 0.0, 0.0},                                    
-                int(12745594.0 / scaling_factor),
+                int(449840797194900.0 / scaling_factor),
                 5.972e24
         ),
-        Object( { screenWidth / 2.0 + (3.844e8 / scaling_factor), screenHeight / 2.0 }, 
+        /*Object( { screenWidth / 2.0 + (3.844e8 / scaling_factor), screenHeight / 2.0 }, 
                 { 0.0, 1019.8 }, 
-                int(3474800.0 / scaling_factor),
+                int(480500 / scaling_factor),
                 7.348e22
         )
+        */
     };
+    
+    //std::vector<Object> objs = {earth, moon};
 
     int i = 0;
 
@@ -40,7 +50,7 @@ int main() {
         glLoadIdentity();
         glTranslated(screenWidth/2.0, screenHeight/2.0, 0);
         glScaled(zoom, zoom, 1.0);
-        glTranslated(-objs[0].position[0], -objs[0].position[1], 0);
+        glTranslated(-objs[i].getPosX(), -objs[i].getPosY(), 0);
 
         // Draw objects
         for(auto& obj : objs) {
@@ -50,6 +60,13 @@ int main() {
         // Close window if ESC key is pressed
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             break; 
+        }
+
+        if(glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS) {
+            i = 0;
+        }
+        else if(glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS) {
+            i = 1;
         }
 
         glfwSwapBuffers(window);

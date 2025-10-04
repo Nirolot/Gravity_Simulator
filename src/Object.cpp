@@ -9,6 +9,28 @@ Object::Object(std::vector<double> position, std::vector<double> velocity, int r
     this->dt = simulationSpeed;
 };
 
+
+double Object::getPosX(void) {
+    return position[0];
+}
+
+double Object::getPosY(void) {
+    return position[1];
+}
+
+double Object::getVelX(void) {
+    return velocity[0];
+}
+
+double Object::getVelY(void) {
+    return velocity[0];
+}
+
+double Object::getMass(void) {
+    return mass;
+}
+
+
 void Object::DrawCircle() {
     glBegin(GL_TRIANGLE_FAN);
 
