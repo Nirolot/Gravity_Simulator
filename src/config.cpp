@@ -28,7 +28,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     if (yoffset < 0) {
         zoom *= 0.9;  
     } else if (yoffset > 0) {
-        zoom *= 2.1;
+        zoom *= 1.1;
     }
 
     if (zoom < 0.01) zoom = 0.01; 

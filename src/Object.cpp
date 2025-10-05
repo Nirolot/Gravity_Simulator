@@ -1,8 +1,8 @@
 #include "config.hpp"
 #include "Object.hpp"
 
-Object::Object(std::vector<double> position, std::vector<double> velocity, int radius, double mass)
-    : position(position), velocity(velocity), radius(radius), mass(mass) {
+Object::Object(std::vector<double> position, std::vector<double> velocity, int radius, double mass, std::vector<int> colors)
+    : position(position), velocity(velocity), radius(radius), mass(mass), colors(colors) {
     this->acc = {0.0, 0.0};
     this->res = standard_res;
     this->shouldDelete = false;
@@ -33,6 +33,8 @@ double Object::getMass(void) {
 
 void Object::DrawCircle() {
     glBegin(GL_TRIANGLE_FAN);
+    
+    glColor3ub(colors[0], colors[1], colors[2]);
 
     glVertex2f(position[0], position[1]);
 

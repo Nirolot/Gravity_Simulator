@@ -3,7 +3,7 @@
 
 class Object {
 public:
-    Object(std::vector<double> position, std::vector<double> velocity, int radius, double mass);
+    Object(std::vector<double> position, std::vector<double> velocity, int radius, double mass, std::vector<int> colors);
 
     void DrawCircle();
 
@@ -23,6 +23,7 @@ private:
     std::vector<double> position;
     std::vector<double> velocity;
     std::vector<double> acc;
+    std::vector<int> colors;
     int radius;
     double res;
     double mass;

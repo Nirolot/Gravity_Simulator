@@ -19,22 +19,8 @@ int main() {
 
     Earth earth;
     Moon moon;
-
-    std::vector<Object> objs = {
-        Object( { screenWidth / 2.0, screenHeight / 2.0 }, 
-                { 0.0, 0.0},                                    
-                int(449840797194900.0 / scaling_factor),
-                5.972e24
-        ),
-        /*Object( { screenWidth / 2.0 + (3.844e8 / scaling_factor), screenHeight / 2.0 }, 
-                { 0.0, 1019.8 }, 
-                int(480500 / scaling_factor),
-                7.348e22
-        )
-        */
-    };
     
-    //std::vector<Object> objs = {earth, moon};
+    std::vector<Object> objs = {earth, moon};
 
     int i = 0;
 
