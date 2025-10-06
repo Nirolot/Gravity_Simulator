@@ -14,7 +14,7 @@ Earth::Earth() : Object(
     { 0.0, 0.0},                                    
     int(6378137.0 / scaling_factor),
     5.972e24,
-    {0, 255, 0}
+    {0, 200, 0}
 ) {}
 
 Moon::Moon() : Object(
@@ -22,5 +22,5 @@ Moon::Moon() : Object(
     { 0.0, 1019.8 }, 
     int(1738e3 / scaling_factor),
     7.348e22,
-    {180, 180, 180}
+    {255, 255, 255}
 ) {}

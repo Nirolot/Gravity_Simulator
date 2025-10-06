@@ -1,12 +1,15 @@
 #include "config.hpp"
 #include "Object.hpp"
 
+#define MAX_PREV_POS 1
+
 Object::Object(std::vector<double> position, std::vector<double> velocity, int radius, double mass, std::vector<int> colors)
     : position(position), velocity(velocity), radius(radius), mass(mass), colors(colors) {
     this->acc = {0.0, 0.0};
     this->res = standard_res;
     this->shouldDelete = false;
     this->dt = simulationSpeed;
+    this->prev_pos.push_back(position);
 };
 
 
@@ -30,22 +33,39 @@ double Object::getMass(void) {
     return mass;
 }
 
+bool Object::getDeleteStatus(void) {
+    return shouldDelete;
+}
 
 void Object::DrawCircle() {
-    glBegin(GL_TRIANGLE_FAN);
-    
-    glColor3ub(colors[0], colors[1], colors[2]);
+    for(int i = 0; i < prev_pos.size(); i++) {    
+        glBegin(GL_TRIANGLE_FAN);
 
-    glVertex2f(position[0], position[1]);
+        glVertex2f(prev_pos[i][0], prev_pos[i][1]);
 
-    for (int i = 0; i <= res; ++i) {
-        double angle = 2.0f * PI * i / res;
-        double x = position[0] + cos(angle) * radius;
-        double y = position[1] + sin(angle) * radius;
-        glVertex2f(x, y);
+        int raggio;
+
+        if(i == prev_pos.size() - 1) {
+            raggio = radius;
+            glColor3ub(colors[0], colors[1], colors[2]);
+        }
+        else {
+            raggio = 1;
+            glColor3ub(255 * (i / float(MAX_PREV_POS)), 255 * (i / float(MAX_PREV_POS)), 255 * (i / float(MAX_PREV_POS)));
+        };
+
+        for (int j = 0; j <= res; ++j) {
+            double angle = 2.0f * PI * j / res;
+            double x = prev_pos[i][0] + cos(angle) * raggio;
+            double y = prev_pos[i][1] + sin(angle) * raggio;
+            glVertex2f(x, y);
+        }
+
+        glEnd();
     }
-
-    glEnd();
+    if(prev_pos.size() >= MAX_PREV_POS) {
+        prev_pos.erase(prev_pos.begin());
+    }
 }
 
 void Object::UpdatePos(const std::vector<Object>& objs) {
@@ -88,6 +108,23 @@ void Object::UpdatePos(const std::vector<Object>& objs) {
     velocity[1] += dt * (k1[3] + 2*k2[3] + 2*k3[3] + k4[3]) / 6.0;
     
     acc = CalculatePullFactor(objs, {});
+
+    prev_pos.push_back(position);
+}
+
+void Object::check_should_delete(std::vector<Object>& objs) {
+    for (auto& obj : objs) {
+        if (&obj != this && !obj.shouldDelete && !this->shouldDelete) {
+            double dx = obj.position[0] - position[0];
+            double dy = obj.position[1] - position[1];
+            double distance = hypot(dx, dy);
+
+            if(distance < this->radius + obj.radius) {
+                obj.shouldDelete = true;
+                this->shouldDelete = true;
+            }
+        }
+    }
 }
 
 std::vector<double> Object::CalculateDerivatives(const std::vector<double>& state, const std::vector<Object>& objs) {

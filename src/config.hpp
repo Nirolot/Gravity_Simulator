@@ -8,9 +8,9 @@
 #define PI 3.14159265358979
 #define G 6.67e-11
 
-const double simulationSpeed = 8.64e2;
+const double simulationSpeed = 864.0;
 const double scaling_factor = 3.884e8 / 800; // 36836935.1669941
-const double standard_res = 50;
+const double standard_res = 100;
 
 extern double zoom;
 extern int screenWidth;

@@ -13,17 +13,21 @@ public:
 
     std::vector<double> CalculateDerivatives(const std::vector<double>& state, const std::vector<Object>& objs);
 
+    void check_should_delete(std::vector<Object>& objs);
+
     double getPosX(void);
     double getPosY(void);
     double getVelX(void);
     double getVelY(void);
     double getMass(void);
+    bool getDeleteStatus(void);
 
 private:
     std::vector<double> position;
     std::vector<double> velocity;
     std::vector<double> acc;
     std::vector<int> colors;
+    std::vector<std::vector<double>> prev_pos;
     int radius;
     double res;
     double mass;
