@@ -1,9 +1,9 @@
 #include "config.hpp"
 
-int screenWidth = 800;   
+int screenWidth = 800;
 int screenHeight = 600;
-double zoom = 1.0; 
-double simulationSpeed = 8.64e3;
+double zoom = 1.0;
+double simulationSpeed = 8.64e2;
 
 GLFWwindow* StartGLFW() {
     if (!glfwInit()) {

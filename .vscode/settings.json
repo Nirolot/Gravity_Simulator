@@ -67,6 +67,11 @@
     "xutility": "cpp",
     "string_view": "cpp",
     "numeric": "cpp",
-    "random": "cpp"
+    "random": "cpp",
+    "chrono": "cpp",
+    "forward_list": "cpp",
+    "iomanip": "cpp",
+    "ratio": "cpp",
+    "sstream": "cpp"
   }
 }

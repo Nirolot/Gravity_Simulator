@@ -10,7 +10,6 @@ Object::Object(std::vector<double> position, std::vector<double> velocity, int r
     this->prev_pos.push_back(position);
 };
 
-
 double Object::getPosX(void) {
     return position[0];
 }
@@ -159,3 +158,4 @@ std::vector<double> Object::CalculatePullFactor(const std::vector<Object>& objs,
     }
     return acc;
 }
+

@@ -3,6 +3,7 @@
 #include "Planets.hpp"
 
 #include <random>
+#include <chrono>
 
 int main() {
 
@@ -29,11 +30,14 @@ int main() {
 
     Earth earth;
     Moon moon;
-    
+
     std::vector<Object> objs = {earth, moon};
 
     int i = 0;
     bool obj_focus = true;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
 
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT);
@@ -42,7 +46,7 @@ int main() {
         // Update position
         for(auto& obj : objs) {
             obj.UpdatePos(objs);
-        }      
+        }
 
         glLoadIdentity();
         glTranslated(screenWidth/2.0, screenHeight/2.0, 0);
@@ -75,8 +79,9 @@ int main() {
 
         // Draw objects
         for(auto& obj : objs) {
-            if(!obj.getDeleteStatus())
+            if(!obj.getDeleteStatus()) {
                 obj.DrawCircle();
+            }
         }
 
         if(glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
@@ -95,7 +100,7 @@ int main() {
             colors = {color(rd), color(rd), color(rd)};
 
             objs.push_back(Object({posX, posY}, {velX, velY}, raggio, massa, colors));
-        }        
+        }
 
         bool erase = false;
 
@@ -103,6 +108,7 @@ int main() {
             obj.check_should_delete(objs);
             erase = true;
         }
+
         if(erase) {
             for(int idx = 0; idx < objs.size(); idx++) {
                 if(objs[idx].getDeleteStatus()) {
@@ -110,18 +116,23 @@ int main() {
                 }
             }
         }
-
-        if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && i < objs.size() - 1) {
-            i++;
-        } 
-        if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && i > 0) {
-            i--;
+        end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+        //std::cout << duration.count() << "\n";
+        if(duration.count() > 300 && obj_focus) {
+        // dopo click aspettare 0.5 s
+            if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && i < objs.size() - 1) {
+                i++;
+                start = std::chrono::high_resolution_clock::now();
+            } 
+            if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && i > 0) {
+                i--;
+                start = std::chrono::high_resolution_clock::now();
+            }
         }
 
         glfwSwapBuffers(window);
-        glfwPollEvents();
-        
-        
+        glfwPollEvents();    
     }
 
     glfwTerminate();
