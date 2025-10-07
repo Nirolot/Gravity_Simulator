@@ -3,6 +3,7 @@
 int screenWidth = 800;   
 int screenHeight = 600;
 double zoom = 1.0; 
+double simulationSpeed = 8.64e3;
 
 GLFWwindow* StartGLFW() {
     if (!glfwInit()) {

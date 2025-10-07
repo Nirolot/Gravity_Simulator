@@ -1,8 +1,6 @@
 #include "config.hpp"
 #include "Object.hpp"
 
-#define MAX_PREV_POS 1
-
 Object::Object(std::vector<double> position, std::vector<double> velocity, int radius, double mass, std::vector<int> colors)
     : position(position), velocity(velocity), radius(radius), mass(mass), colors(colors) {
     this->acc = {0.0, 0.0};
@@ -51,7 +49,7 @@ void Object::DrawCircle() {
         }
         else {
             raggio = 1;
-            glColor3ub(255 * (i / float(MAX_PREV_POS)), 255 * (i / float(MAX_PREV_POS)), 255 * (i / float(MAX_PREV_POS)));
+            glColor3ub(255 * (i / float(MAX_PREV_POS)), 255 * (i / float(MAX_PREV_POS)), 255 * (i / float(MAX_PREV_POS)));  // * (i / float(MAX_PREV_POS)) 
         };
 
         for (int j = 0; j <= res; ++j) {
