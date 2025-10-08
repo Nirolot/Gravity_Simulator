@@ -6,7 +6,6 @@ Object::Object(std::vector<double> position, std::vector<double> velocity, int r
     this->acc = {0.0, 0.0};
     this->res = standard_res;
     this->shouldDelete = false;
-    this->dt = simulationSpeed;
     this->prev_pos.push_back(position);
 };
 
@@ -47,8 +46,8 @@ void Object::DrawCircle() {
             glColor3ub(colors[0], colors[1], colors[2]);
         }
         else {
-            raggio = 1;
-            glColor3ub(255 * (i / float(MAX_PREV_POS)), 255 * (i / float(MAX_PREV_POS)), 255 * (i / float(MAX_PREV_POS)));  // * (i / float(MAX_PREV_POS)) 
+            raggio = 5;
+            glColor3ub(255, 255, 255);  // * (i / float(MAX_PREV_POS)) 
         };
 
         for (int j = 0; j <= res; ++j) {
@@ -72,37 +71,37 @@ void Object::UpdatePos(const std::vector<Object>& objs) {
     std::vector<double> k1 = CalculateDerivatives(state, objs);
     
     std::vector<double> state2 = {
-        state[0] + 0.5 * dt * k1[0] / scaling_factor,
-        state[1] + 0.5 * dt * k1[1] / scaling_factor,
-        state[2] + 0.5 * dt * k1[2],
-        state[3] + 0.5 * dt * k1[3]
+        state[0] + 0.5 * simulationSpeed * k1[0] / scaling_factor,
+        state[1] + 0.5 * simulationSpeed * k1[1] / scaling_factor,
+        state[2] + 0.5 * simulationSpeed * k1[2],
+        state[3] + 0.5 * simulationSpeed * k1[3]
     };
 
     std::vector<double> k2 = CalculateDerivatives(state2, objs);
     
     std::vector<double> state3 = {
-        state[0] + 0.5 * dt * k2[0] / scaling_factor,
-        state[1] + 0.5 * dt * k2[1] / scaling_factor,
-        state[2] + 0.5 * dt * k2[2],
-        state[3] + 0.5 * dt * k2[3]
+        state[0] + 0.5 * simulationSpeed * k2[0] / scaling_factor,
+        state[1] + 0.5 * simulationSpeed * k2[1] / scaling_factor,
+        state[2] + 0.5 * simulationSpeed * k2[2],
+        state[3] + 0.5 * simulationSpeed * k2[3]
     };
 
     std::vector<double> k3 = CalculateDerivatives(state3, objs);
     
     std::vector<double> state4 = {
-        state[0] + dt * k3[0] / scaling_factor,
-        state[1] + dt * k3[1] / scaling_factor,
-        state[2] + dt * k3[2],
-        state[3] + dt * k3[3]
+        state[0] + simulationSpeed * k3[0] / scaling_factor,
+        state[1] + simulationSpeed * k3[1] / scaling_factor,
+        state[2] + simulationSpeed * k3[2],
+        state[3] + simulationSpeed * k3[3]
     };
 
     std::vector<double> k4 = CalculateDerivatives(state4, objs);
     
-    position[0] += dt * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]) / (6.0 * scaling_factor);
-    position[1] += dt * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]) / (6.0 * scaling_factor);
+    position[0] += simulationSpeed * (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]) / (6.0 * scaling_factor);
+    position[1] += simulationSpeed * (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]) / (6.0 * scaling_factor);
     
-    velocity[0] += dt * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]) / 6.0;
-    velocity[1] += dt * (k1[3] + 2*k2[3] + 2*k3[3] + k4[3]) / 6.0;
+    velocity[0] += simulationSpeed * (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]) / 6.0;
+    velocity[1] += simulationSpeed * (k1[3] + 2*k2[3] + 2*k3[3] + k4[3]) / 6.0;
     
     acc = CalculatePullFactor(objs, {});
 

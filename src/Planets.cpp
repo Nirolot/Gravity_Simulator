@@ -4,23 +4,23 @@
 Sun::Sun() : Object(
     { screenWidth / 2.0, screenHeight / 2.0 }, 
     { 0.0, 0.0 },                              
-    30,                                       
+    50,                                       
     1.989e30,
-    {127, 127, 127}                               
+    {255, 255, 0}                               
 ) {}
 
 Earth::Earth() : Object(
-    { screenWidth / 2.0, screenHeight / 2.0 }, 
-    { 0.0, 0.0},                                    
-    13, // int(6378137.0 / scaling_factor)
+    { screenWidth / 2.0 + (149597870700.0 / scaling_factor), screenHeight / 2.0 }, 
+    { 0.0, 29799.51},                                    
+    7, // int(6378137.0 / scaling_factor)
     5.972e24,
     {0, 200, 0}
 ) {}
 
 Moon::Moon() : Object(
-    { screenWidth / 2.0 + (3.844e8 / scaling_factor), screenHeight / 2.0 }, 
-    { 0.0, 1019.8 }, 
-    4, // int(1738e3 / scaling_factor)
+    { screenWidth / 2.0 + (149597870700.0 / scaling_factor) + (3.844e8 / scaling_factor), screenHeight / 2.0 }, 
+    { 0.0, 29799.51 + 1019.8 }, 
+    1, // int(1738e3 / scaling_factor)
     7.348e22,
     {255, 255, 255}
 ) {}

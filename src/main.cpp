@@ -28,10 +28,11 @@ int main() {
     glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
     glMatrixMode(GL_MODELVIEW);
 
+    Sun sun;
     Earth earth;
     Moon moon;
 
-    std::vector<Object> objs = {earth, moon};
+    std::vector<Object> objs = {sun, earth, moon};
 
     int i = 0;
     bool obj_focus = true;
@@ -63,15 +64,14 @@ int main() {
         if(objs.size() > 0 && obj_focus) {
             glTranslated(-objs[i].getPosX(), -objs[i].getPosY(), 0);
         }
-        /*
+        
         if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && simulationSpeed <= 8.64e4) {
-            simulationSpeed *= 1.1;
+            speed_up_sim();
         }
 
         else if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && simulationSpeed > 0) {
-            simulationSpeed *= 0.9;
+            speed_down_sim();
         }
-        */
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             break; 
@@ -118,7 +118,6 @@ int main() {
         }
         end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-        //std::cout << duration.count() << "\n";
         if(duration.count() > 300 && obj_focus) {
         // dopo click aspettare 0.5 s
             if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && i < objs.size() - 1) {
