@@ -28,6 +28,8 @@ int main() {
     glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
     glMatrixMode(GL_MODELVIEW);
 
+    
+
     Sun sun;
     Earth earth;
     Moon moon;
