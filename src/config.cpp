@@ -3,7 +3,6 @@
 int screenWidth = 800;
 int screenHeight = 600;
 double zoom = 1.0;
-double simulationSpeed = 8.64e2;
 
 GLFWwindow* StartGLFW() {
     if (!glfwInit()) {
@@ -34,12 +33,4 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 
     if (zoom < 0.01) zoom = 0.01; 
     if (zoom > 20000.0) zoom = 20000.0; 
-}
-
-void speed_up_sim() {
-    simulationSpeed *= 1.1;
-}
-
-void speed_down_sim() {
-    simulationSpeed *= 0.9;
 }
