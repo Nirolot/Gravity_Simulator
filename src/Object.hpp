@@ -15,12 +15,12 @@ public:
 
     void check_should_delete(std::vector<Object>& objs);
 
-    double getPosX(void);
-    double getPosY(void);
-    double getVelX(void);
-    double getVelY(void);
-    double getMass(void);
-    bool getDeleteStatus(void);
+    double getPosX(void) const;
+    double getPosY(void) const;
+    double getVelX(void) const;
+    double getVelY(void) const;
+    double getMass(void) const;
+    bool getDeleteStatus(void) const;
 
 private:
     std::vector<double> position;
@@ -31,6 +31,5 @@ private:
     int radius;
     double res;
     double mass;
-    double dt;
     bool shouldDelete;
 };

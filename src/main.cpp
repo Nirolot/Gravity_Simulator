@@ -5,6 +5,8 @@
 #include <random>
 #include <chrono>
 
+const int maxSimSpeed = 80;
+
 int main() {
 
     std::random_device rd; 
@@ -28,28 +30,22 @@ int main() {
     glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
     glMatrixMode(GL_MODELVIEW);
 
-    
-
     Sun sun;
     Earth earth;
     Moon moon;
 
     std::vector<Object> objs = {sun, earth, moon};
 
-    int i = 0;
+    int i = 0, simSpeed = 1;
     bool obj_focus = true;
 
     auto start = std::chrono::high_resolution_clock::now();
     auto end = std::chrono::high_resolution_clock::now();
 
     while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT);
-        glLoadIdentity();
+        auto start2 = std::chrono::high_resolution_clock::now();
 
-        // Update position
-        for(auto& obj : objs) {
-            obj.UpdatePos(objs);
-        }
+        glLoadIdentity();
 
         glLoadIdentity();
         glTranslated(screenWidth/2.0, screenHeight/2.0, 0);
@@ -66,25 +62,40 @@ int main() {
         if(objs.size() > 0 && obj_focus) {
             glTranslated(-objs[i].getPosX(), -objs[i].getPosY(), 0);
         }
-        
-        if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && simulationSpeed <= 8.64e4) {
-            speed_up_sim();
+
+        if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && simSpeed <= maxSimSpeed - 1) {
+            simSpeed++;
         }
 
-        else if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && simulationSpeed > 0) {
-            speed_down_sim();
+        else if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && simSpeed > 1) {
+            simSpeed--;
         }
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             break; 
         }
 
-        // Draw objects
-        for(auto& obj : objs) {
-            if(!obj.getDeleteStatus()) {
-                obj.DrawCircle();
+        bool erase = false;
+        for(int ii = 0; ii < simSpeed; ii++) {
+            glClear(GL_COLOR_BUFFER_BIT);
+            for(auto& obj : objs) {
+                obj.UpdatePos(objs);
+                obj.check_should_delete(objs);
+                erase = true;
+                if(!obj.getDeleteStatus()) {
+                    obj.DrawCircle();
+                }
             }
         }
+
+        objs.erase(
+            std::remove_if(objs.begin(), objs.end(), 
+                [](const Object& obj) { 
+                    return obj.getDeleteStatus(); 
+                }
+            ), 
+            objs.end()
+        );
 
         if(glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
             std::uniform_real_distribution<> posx(-900.0, 900.0);
@@ -104,24 +115,17 @@ int main() {
             objs.push_back(Object({posX, posY}, {velX, velY}, raggio, massa, colors));
         }
 
-        bool erase = false;
-
-        for(auto& obj : objs) {
-            obj.check_should_delete(objs);
-            erase = true;
-        }
-
-        if(erase) {
+        /*if(erase) {
             for(int idx = 0; idx < objs.size(); idx++) {
                 if(objs[idx].getDeleteStatus()) {
                     objs.erase(objs.begin() + idx);
                 }
             }
         }
+        */
         end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
         if(duration.count() > 300 && obj_focus) {
-        // dopo click aspettare 0.5 s
             if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && i < objs.size() - 1) {
                 i++;
                 start = std::chrono::high_resolution_clock::now();
@@ -131,6 +135,8 @@ int main() {
                 start = std::chrono::high_resolution_clock::now();
             }
         }
+        auto end2 = std::chrono::high_resolution_clock::now();
+        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end2-start2).count() << "\n";
 
         glfwSwapBuffers(window);
         glfwPollEvents();    
