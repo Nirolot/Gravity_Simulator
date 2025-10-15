@@ -31,10 +31,17 @@ int main() {
     glMatrixMode(GL_MODELVIEW);
 
     Sun sun;
+    Mercury mercury;
+    Venus venus;
     Earth earth;
     Moon moon;
+    Mars mars;
+    Jupiter jupiter;
+    Saturn saturn;
+    Uranus uranus;
+    Neptune neptune;
 
-    std::vector<Object> objs = {sun, earth, moon};
+    std::vector<Object> objs = {sun, mercury, venus, earth, moon, mars, jupiter, saturn, uranus, neptune};
 
     int i = 0, simSpeed = 1;
     bool obj_focus = true;
@@ -43,12 +50,18 @@ int main() {
     auto end = std::chrono::high_resolution_clock::now();
 
     while (!glfwWindowShouldClose(window)) {
-        auto start2 = std::chrono::high_resolution_clock::now();
 
+        glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
 
+        // Campo visivo in base allo zoom
+        double viewWidth = screenWidth / zoom;
+        double viewHeight = screenHeight / zoom;
+        glOrtho(-viewWidth / 2.0, viewWidth / 2.0, -viewHeight / 2.0, viewHeight / 2.0, -1, 1);
+
+        glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        glTranslated(screenWidth/2.0, screenHeight/2.0, 0);
+        glTranslated(screenWidth / 2.0, screenHeight / 2.0, 0);
         glScaled(zoom, zoom, 1.0);
 
         if(glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
@@ -59,7 +72,7 @@ int main() {
             obj_focus = false;
         }
 
-        if(objs.size() > 0 && obj_focus) {
+        if(obj_focus && objs.size() > 0) {
             glTranslated(-objs[i].getPosX(), -objs[i].getPosY(), 0);
         }
 
@@ -79,7 +92,9 @@ int main() {
         for(int ii = 0; ii < simSpeed; ii++) {
             glClear(GL_COLOR_BUFFER_BIT);
             for(auto& obj : objs) {
-                obj.UpdatePos(objs);
+                if(!obj.getDeleteStatus()) {
+                    obj.UpdatePos(objs);
+                }
                 obj.check_should_delete(objs);
                 erase = true;
                 if(!obj.getDeleteStatus()) {
@@ -114,15 +129,7 @@ int main() {
 
             objs.push_back(Object({posX, posY}, {velX, velY}, raggio, massa, colors));
         }
-
-        /*if(erase) {
-            for(int idx = 0; idx < objs.size(); idx++) {
-                if(objs[idx].getDeleteStatus()) {
-                    objs.erase(objs.begin() + idx);
-                }
-            }
-        }
-        */
+        
         end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
         if(duration.count() > 300 && obj_focus) {
@@ -135,8 +142,6 @@ int main() {
                 start = std::chrono::high_resolution_clock::now();
             }
         }
-        auto end2 = std::chrono::high_resolution_clock::now();
-        std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end2-start2).count() << "\n";
 
         glfwSwapBuffers(window);
         glfwPollEvents();    
