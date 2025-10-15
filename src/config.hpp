@@ -7,9 +7,9 @@
 
 #define PI 3.14159265358979
 #define G 6.67e-11
-#define MAX_PREV_POS 100
+#define MAX_PREV_POS 3000
 
-extern double simulationSpeed;
+const double dt = 100; // 3000
 const double scaling_factor = 3.884e8 / 100; // 36836935.1669941
 const double standard_res = 100;
 

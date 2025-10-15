@@ -6,61 +6,60 @@ Object::Object(std::vector<double> position, std::vector<double> velocity, int r
     this->acc = {0.0, 0.0};
     this->res = standard_res;
     this->shouldDelete = false;
-    this->dt = simulationSpeed;
     this->prev_pos.push_back(position);
 };
 
-
-double Object::getPosX(void) {
+double Object::getPosX(void) const {
     return position[0];
 }
 
-double Object::getPosY(void) {
+double Object::getPosY(void) const{
     return position[1];
 }
 
-double Object::getVelX(void) {
+double Object::getVelX(void) const {
     return velocity[0];
 }
 
-double Object::getVelY(void) {
+double Object::getVelY(void) const {
     return velocity[0];
 }
 
-double Object::getMass(void) {
+double Object::getMass(void) const {
     return mass;
 }
 
-bool Object::getDeleteStatus(void) {
+bool Object::getDeleteStatus(void) const {
     return shouldDelete;
 }
 
 void Object::DrawCircle() {
-    for(int i = 0; i < prev_pos.size(); i++) {    
-        glBegin(GL_TRIANGLE_FAN);
-
+    // Disegna la scia
+    glPointSize(1.0f);
+    glBegin(GL_POINTS);
+    for(int i = 0; i < prev_pos.size() - 1; i++) {
+        float alpha = i / float(MAX_PREV_POS);
+        glColor4f(1.0, 1.0, 1.0, alpha);
         glVertex2f(prev_pos[i][0], prev_pos[i][1]);
+    }
+    glEnd();
 
-        int raggio;
-
-        if(i == prev_pos.size() - 1) {
-            raggio = radius;
-            glColor3ub(colors[0], colors[1], colors[2]);
-        }
-        else {
-            raggio = 1;
-            glColor3ub(255 * (i / float(MAX_PREV_POS)), 255 * (i / float(MAX_PREV_POS)), 255 * (i / float(MAX_PREV_POS)));  // * (i / float(MAX_PREV_POS)) 
-        };
-
+    // Disegna il cerchio all’ultima posizione
+    if(!prev_pos.empty()) {
+        auto& p = prev_pos.back();
+        glColor3ub(colors[0], colors[1], colors[2]);
+        glBegin(GL_TRIANGLE_FAN);
+        glVertex2f(p[0], p[1]);
         for (int j = 0; j <= res; ++j) {
-            double angle = 2.0f * PI * j / res;
-            double x = prev_pos[i][0] + cos(angle) * raggio;
-            double y = prev_pos[i][1] + sin(angle) * raggio;
+            double angle = 2.0 * PI * j / res;
+            double x = p[0] + cos(angle) * radius;
+            double y = p[1] + sin(angle) * radius;
             glVertex2f(x, y);
         }
-
         glEnd();
     }
+
+    // Mantieni la dimensione massima della lista
     if(prev_pos.size() >= MAX_PREV_POS) {
         prev_pos.erase(prev_pos.begin());
     }
@@ -159,3 +158,4 @@ std::vector<double> Object::CalculatePullFactor(const std::vector<Object>& objs,
     }
     return acc;
 }
+

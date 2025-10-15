@@ -3,6 +3,9 @@
 #include "Planets.hpp"
 
 #include <random>
+#include <chrono>
+
+const int maxSimSpeed = 80;
 
 int main() {
 
@@ -27,25 +30,38 @@ int main() {
     glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
     glMatrixMode(GL_MODELVIEW);
 
+    Sun sun;
+    Mercury mercury;
+    Venus venus;
     Earth earth;
     Moon moon;
-    
-    std::vector<Object> objs = {earth, moon};
+    Mars mars;
+    Jupiter jupiter;
+    Saturn saturn;
+    Uranus uranus;
+    Neptune neptune;
 
-    int i = 0;
+    std::vector<Object> objs = {sun, mercury, venus, earth, moon, mars, jupiter, saturn, uranus, neptune};
+
+    int i = 0, simSpeed = 1;
     bool obj_focus = true;
 
+    auto start = std::chrono::high_resolution_clock::now();
+    auto end = std::chrono::high_resolution_clock::now();
+
     while (!glfwWindowShouldClose(window)) {
-        glClear(GL_COLOR_BUFFER_BIT);
+
+        glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
 
-        // Update position
-        for(auto& obj : objs) {
-            obj.UpdatePos(objs);
-        }      
+        // Campo visivo in base allo zoom
+        double viewWidth = screenWidth / zoom;
+        double viewHeight = screenHeight / zoom;
+        glOrtho(-viewWidth / 2.0, viewWidth / 2.0, -viewHeight / 2.0, viewHeight / 2.0, -1, 1);
 
+        glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        glTranslated(screenWidth/2.0, screenHeight/2.0, 0);
+        glTranslated(screenWidth / 2.0, screenHeight / 2.0, 0);
         glScaled(zoom, zoom, 1.0);
 
         if(glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {
@@ -56,28 +72,45 @@ int main() {
             obj_focus = false;
         }
 
-        if(objs.size() > 0 && obj_focus) {
+        if(obj_focus && objs.size() > 0) {
             glTranslated(-objs[i].getPosX(), -objs[i].getPosY(), 0);
         }
-        /*
-        if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && simulationSpeed <= 8.64e4) {
-            simulationSpeed *= 1.1;
+
+        if(glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && simSpeed <= maxSimSpeed - 1) {
+            simSpeed++;
         }
 
-        else if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && simulationSpeed > 0) {
-            simulationSpeed *= 0.9;
+        else if(glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS && simSpeed > 1) {
+            simSpeed--;
         }
-        */
 
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             break; 
         }
 
-        // Draw objects
-        for(auto& obj : objs) {
-            if(!obj.getDeleteStatus())
-                obj.DrawCircle();
+        bool erase = false;
+        for(int ii = 0; ii < simSpeed; ii++) {
+            glClear(GL_COLOR_BUFFER_BIT);
+            for(auto& obj : objs) {
+                if(!obj.getDeleteStatus()) {
+                    obj.UpdatePos(objs);
+                }
+                obj.check_should_delete(objs);
+                erase = true;
+                if(!obj.getDeleteStatus()) {
+                    obj.DrawCircle();
+                }
+            }
         }
+
+        objs.erase(
+            std::remove_if(objs.begin(), objs.end(), 
+                [](const Object& obj) { 
+                    return obj.getDeleteStatus(); 
+                }
+            ), 
+            objs.end()
+        );
 
         if(glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
             std::uniform_real_distribution<> posx(-900.0, 900.0);
@@ -95,33 +128,23 @@ int main() {
             colors = {color(rd), color(rd), color(rd)};
 
             objs.push_back(Object({posX, posY}, {velX, velY}, raggio, massa, colors));
-        }        
-
-        bool erase = false;
-
-        for(auto& obj : objs) {
-            obj.check_should_delete(objs);
-            erase = true;
         }
-        if(erase) {
-            for(int idx = 0; idx < objs.size(); idx++) {
-                if(objs[idx].getDeleteStatus()) {
-                    objs.erase(objs.begin() + idx);
-                }
+        
+        end = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+        if(duration.count() > 300 && obj_focus) {
+            if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && i < objs.size() - 1) {
+                i++;
+                start = std::chrono::high_resolution_clock::now();
+            } 
+            if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && i > 0) {
+                i--;
+                start = std::chrono::high_resolution_clock::now();
             }
         }
 
-        if(glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS && i < objs.size() - 1) {
-            i++;
-        } 
-        if(glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS && i > 0) {
-            i--;
-        }
-
         glfwSwapBuffers(window);
-        glfwPollEvents();
-        
-        
+        glfwPollEvents();    
     }
 
     glfwTerminate();

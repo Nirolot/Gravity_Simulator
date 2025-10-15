@@ -1,9 +1,8 @@
 #include "config.hpp"
 
-int screenWidth = 800;   
+int screenWidth = 800;
 int screenHeight = 600;
-double zoom = 1.0; 
-double simulationSpeed = 8.64e3;
+double zoom = 1.0;
 
 GLFWwindow* StartGLFW() {
     if (!glfwInit()) {
@@ -33,5 +32,5 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     }
 
     if (zoom < 0.01) zoom = 0.01; 
-    if (zoom > 10000.0) zoom = 10000.0; 
+    if (zoom > 40000.0) zoom = 40000.0; 
 }
