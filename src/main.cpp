@@ -61,7 +61,6 @@ int main() {
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        glTranslated(screenWidth / 2.0, screenHeight / 2.0, 0);
         glScaled(zoom, zoom, 1.0);
 
         if(glfwGetKey(window, GLFW_KEY_C) == GLFW_PRESS) {

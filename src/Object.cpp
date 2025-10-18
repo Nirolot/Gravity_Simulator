@@ -22,7 +22,7 @@ double Object::getVelX(void) const {
 }
 
 double Object::getVelY(void) const {
-    return velocity[0];
+    return velocity[1];
 }
 
 double Object::getMass(void) const {
@@ -34,7 +34,6 @@ bool Object::getDeleteStatus(void) const {
 }
 
 void Object::DrawCircle() {
-    // Disegna la scia
     glPointSize(1.0f);
     glBegin(GL_POINTS);
     for(int i = 0; i < prev_pos.size() - 1; i++) {
@@ -44,7 +43,6 @@ void Object::DrawCircle() {
     }
     glEnd();
 
-    // Disegna il cerchio all’ultima posizione
     if(!prev_pos.empty()) {
         auto& p = prev_pos.back();
         glColor3ub(colors[0], colors[1], colors[2]);
@@ -59,7 +57,6 @@ void Object::DrawCircle() {
         glEnd();
     }
 
-    // Mantieni la dimensione massima della lista
     if(prev_pos.size() >= MAX_PREV_POS) {
         prev_pos.erase(prev_pos.begin());
     }
