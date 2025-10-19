@@ -1,17 +1,19 @@
 #pragma once
 #include <vector>
 
+class BHTree;
+
 class Object {
 public:
     Object(std::vector<double> position, std::vector<double> velocity, int radius, double mass, std::vector<int> colors);
 
     void DrawCircle();
 
-    void UpdatePos(const std::vector<Object>& objs);
+    void Object::UpdatePos(const BHTree& tree);
 
-    std::vector<double> CalculatePullFactor(const std::vector<Object>& objs, const std::vector<double>& pos);
+    std::vector<double> Object::CalculatePullFactor(const BHTree& tree, const std::vector<double>& pos);
 
-    std::vector<double> CalculateDerivatives(const std::vector<double>& state, const std::vector<Object>& objs);
+    std::vector<double> Object::CalculateDerivatives(const std::vector<double>& state, const BHTree& tree);
 
     void check_should_delete(std::vector<Object>& objs);
 

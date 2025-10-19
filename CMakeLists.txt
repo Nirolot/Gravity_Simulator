@@ -11,6 +11,7 @@ add_executable(Gravity_simulator
     src/config.cpp
     src/Object.cpp
     src/Planets.cpp
+    src/Bhtree.cpp
     )
 
 target_include_directories(Gravity_simulator PRIVATE dependencies/include)
