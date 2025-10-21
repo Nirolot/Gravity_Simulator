@@ -12,14 +12,6 @@ int main() {
     std::random_device rd; 
     std::mt19937 gen(rd()); 
 
-    double posX;
-    double posY;
-    double velX;
-    double velY;
-    double massa;
-    int raggio;
-    std::vector<int> colors;
-
     GLFWwindow* window = StartGLFW();
     if (!window) {
         std::cout << "NOOO"; 
@@ -32,8 +24,8 @@ int main() {
     glLoadIdentity();
     glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
     glMatrixMode(GL_MODELVIEW);
-
-    /*Sun sun;
+/*
+    Sun sun;
     Mercury mercury;
     Venus venus;
     Earth earth;
@@ -45,8 +37,8 @@ int main() {
     Neptune neptune;
 
     std::vector<Object> objs = {sun, mercury, venus, earth, moon, mars, jupiter, saturn, uranus, neptune};
-    */
-
+*/
+    //Sun sun;
     std::vector<Object> objs = {};
 
     int i = 0, simSpeed = 1;
@@ -75,7 +67,8 @@ int main() {
         }
 
         if (obj_focus && objs.size() > 0) {
-            glTranslated(-objs[i].getPosX(), -objs[i].getPosY(), 0);
+            Vec2 focusPos = objs[i].getPosition();
+            glTranslated(-focusPos.x, -focusPos.y, 0);
         }
 
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && simSpeed <= maxSimSpeed - 1) {
@@ -89,7 +82,7 @@ int main() {
             break; 
         }
 
-        TQuadrant quad(-viewWidth / 2.0, -viewHeight / 2.0, viewWidth / 2.0, viewHeight / 2.0);
+        TQuadrant quad(-screenWidth, -screenHeight, screenWidth, screenHeight);
         BHTree tree(quad);
         for (auto& obj : objs) {
             if (!obj.getDeleteStatus()) {
@@ -97,48 +90,40 @@ int main() {
             }
         }
 
-        bool erase = false;
-        for (int ii = 0; ii < simSpeed; ii++) {
-            glClear(GL_COLOR_BUFFER_BIT);
-            std::vector<Object*> active_objs;
-            for (auto& obj : objs) {
-                if (!obj.getDeleteStatus()) {
-                    active_objs.push_back(&obj);
-                }
-            }
-            for (auto* obj : active_objs) {
-                obj->UpdatePos(tree);
-                obj->check_should_delete(objs);
-                if (!obj->getDeleteStatus()) {
-                    obj->DrawCircle();
-                }
+        glClear(GL_COLOR_BUFFER_BIT);
+        std::vector<Object*> active_objs;
+        for (auto& obj : objs) {
+            if (!obj.getDeleteStatus()) {
+                active_objs.push_back(&obj);
             }
         }
 
-        size_t erased_count = std::remove_if(objs.begin(), objs.end(), 
-            [](const Object& obj) { return obj.getDeleteStatus(); }
-        ) - objs.begin();
-        objs.erase(objs.begin(), objs.begin() + erased_count);
-        if (erased_count > 0) {
-            tree.invalidateObject(); // Invalida il puntatore se ci sono eliminazioni
+        for (auto* obj : active_objs) {
+            obj->UpdatePos(tree);
+            obj->check_should_delete(active_objs);
+            obj->DrawCircle(); 
         }
 
+        objs.erase(
+            std::remove_if(objs.begin(), objs.end(), 
+                [](const Object& obj) { return obj.getDeleteStatus(); }
+            ), 
+            objs.end()
+        );
+        
         if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
-            std::uniform_real_distribution<> posx(-screenWidth, screenWidth);
-            std::uniform_real_distribution<> posy(-screenHeight, screenHeight);
-            std::uniform_real_distribution<> vel(0.0, 300.0);
+            std::uniform_real_distribution<> p(-800, 800);
+            std::uniform_real_distribution<> v(0.0, 300.0);
             std::uniform_real_distribution<> mass(7e22, 7e25);
-            std::uniform_int_distribution<> radius(1, 40);
+            std::uniform_int_distribution<> radius(10, 10);
             std::uniform_int_distribution<> color(150, 255);
-            posX = posx(rd);
-            posY = posy(rd);
-            velX = vel(rd);
-            velY = vel(rd);
-            massa = mass(rd);
-            raggio = radius(rd);
-            colors = {color(rd), color(rd), color(rd)};
+            Vec2 pos(p(rd), p(rd));
+            Vec2 vel(v(rd), v(rd));
+            Color col(color(rd), color(rd), color(rd));
+            double massa = mass(rd);
+            int raggio = radius(rd);
 
-            objs.push_back(Object({posX, posY}, {velX, velY}, raggio, massa, colors));
+            objs.push_back(Object(pos, vel, raggio, massa, col));
         }
         
         end = std::chrono::high_resolution_clock::now();
