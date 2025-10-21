@@ -1,4 +1,5 @@
 #pragma once
+#include "BHTree.hpp"
 #include "Object.hpp"
 
 class Sun : public Object {
