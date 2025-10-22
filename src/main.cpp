@@ -3,22 +3,21 @@
 #include "Object.hpp"
 #include "Planets.hpp"
 
-#include <random>
 #include <chrono>
 
 const int maxSimSpeed = 80;
 
 int main() {
-    std::random_device rd; 
-    std::mt19937 gen(rd()); 
 
     GLFWwindow* window = StartGLFW();
     if (!window) {
         std::cout << "NOOO"; 
         return -1;
     }
-
+        
     glfwSetScrollCallback(window, scroll_callback);
+    glfwSetCursorPosCallback(window, cursor_position_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -38,8 +37,10 @@ int main() {
 
     std::vector<Object> objs = {sun, mercury, venus, earth, moon, mars, jupiter, saturn, uranus, neptune};
 */
-    //Sun sun;
+    Sun sun;
     std::vector<Object> objs = {};
+
+    glfwSetWindowUserPointer(window, &objs);
 
     int i = 0, simSpeed = 1;
     bool obj_focus = true;
@@ -68,7 +69,10 @@ int main() {
 
         if (obj_focus && objs.size() > 0) {
             Vec2 focusPos = objs[i].getPosition();
+            cameraOffset = focusPos; // Aggiorna l'offset della camera
             glTranslated(-focusPos.x, -focusPos.y, 0);
+        } else {
+            cameraOffset = Vec2(0.0, 0.0); // Reset quando non segui nessuno
         }
 
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && simSpeed <= maxSimSpeed - 1) {
@@ -110,21 +114,6 @@ int main() {
             ), 
             objs.end()
         );
-        
-        if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS) {
-            std::uniform_real_distribution<> p(-800, 800);
-            std::uniform_real_distribution<> v(0.0, 300.0);
-            std::uniform_real_distribution<> mass(7e22, 7e25);
-            std::uniform_int_distribution<> radius(10, 10);
-            std::uniform_int_distribution<> color(150, 255);
-            Vec2 pos(p(rd), p(rd));
-            Vec2 vel(v(rd), v(rd));
-            Color col(color(rd), color(rd), color(rd));
-            double massa = mass(rd);
-            int raggio = radius(rd);
-
-            objs.push_back(Object(pos, vel, raggio, massa, col));
-        }
         
         end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
