@@ -23,27 +23,15 @@ int main() {
     glLoadIdentity();
     glOrtho(0, screenWidth, 0, screenHeight, -1, 1);
     glMatrixMode(GL_MODELVIEW);
-/*
-    Sun sun;
-    Mercury mercury;
-    Venus venus;
-    Earth earth;
-    Moon moon;
-    Mars mars;
-    Jupiter jupiter;
-    Saturn saturn;
-    Uranus uranus;
-    Neptune neptune;
 
-    std::vector<Object> objs = {sun, mercury, venus, earth, moon, mars, jupiter, saturn, uranus, neptune};
-*/
-    Sun sun;
     std::vector<Object> objs = {};
 
     glfwSetWindowUserPointer(window, &objs);
 
     int i = 0, simSpeed = 1;
     bool obj_focus = true;
+
+
 
     auto start = std::chrono::high_resolution_clock::now();
     auto end = std::chrono::high_resolution_clock::now();
@@ -85,36 +73,36 @@ int main() {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             break; 
         }
-
-        TQuadrant quad(-screenWidth, -screenHeight, screenWidth, screenHeight);
-        BHTree tree(quad);
-        for (auto& obj : objs) {
-            if (!obj.getDeleteStatus()) {
-                tree.insert(&obj);
+        for(int ii = 0; ii < simSpeed; ii++) {
+            TQuadrant quad(-screenWidth * 3, -screenHeight * 3, screenWidth * 3, screenHeight * 3);
+            BHTree tree(quad);
+            for (auto& obj : objs) {
+                if (!obj.getDeleteStatus()) {
+                    tree.insert(&obj);
+                }
             }
-        }
 
-        glClear(GL_COLOR_BUFFER_BIT);
-        std::vector<Object*> active_objs;
-        for (auto& obj : objs) {
-            if (!obj.getDeleteStatus()) {
-                active_objs.push_back(&obj);
+            glClear(GL_COLOR_BUFFER_BIT);
+            std::vector<Object*> active_objs;
+            for (auto& obj : objs) {
+                if (!obj.getDeleteStatus()) {
+                    active_objs.push_back(&obj);
+                }
             }
-        }
 
-        for (auto* obj : active_objs) {
-            obj->UpdatePos(tree);
-            obj->check_should_delete(active_objs);
-            obj->DrawCircle(); 
-        }
+            for (auto* obj : active_objs) {
+                obj->UpdatePos(tree);
+                obj->check_should_delete(active_objs);
+                obj->DrawCircle(); 
+            }
 
-        objs.erase(
-            std::remove_if(objs.begin(), objs.end(), 
-                [](const Object& obj) { return obj.getDeleteStatus(); }
-            ), 
-            objs.end()
-        );
-        
+            objs.erase(
+                std::remove_if(objs.begin(), objs.end(), 
+                    [](const Object& obj) { return obj.getDeleteStatus(); }
+                ), 
+                objs.end()
+            );
+        }
         end = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
         if (duration.count() > 300 && obj_focus) {
