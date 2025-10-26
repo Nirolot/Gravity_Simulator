@@ -97,7 +97,7 @@ void Object::UpdatePos(const BHTree &tree)
     prev_pos.push_back(position);
 }
 
-void Object::check_should_delete(std::vector<Object *> &objs)
+void Object::check_should_delete(std::vector<Object*> &objs)
 {
     for (auto *obj : objs)
     {
@@ -109,54 +109,23 @@ void Object::check_should_delete(std::vector<Object *> &objs)
             if (distance < this->radius + obj->radius)
             {
                 double sumM = this->mass + obj->mass;
-                Vec2 deltaPos = this->position - obj->position;  // Δx
-                Vec2 deltaVel = this->velocity - obj->velocity;  // Δv
+                Vec2 deltaPos = this->position - obj->position;
+                Vec2 deltaVel = this->velocity - obj->velocity; 
 
                 double dotProduct = deltaVel.x * deltaPos.x + deltaVel.y * deltaPos.y;
                 double distanceSquared = deltaPos.x * deltaPos.x + deltaPos.y * deltaPos.y;
 
-                std::cout << "this: " << this->velocity.x << ", " << this->velocity.y << "\n";
-                std::cout << "obj: " << obj->velocity.x << ", " << obj->velocity.y << "\n";
+                if (distanceSquared < 1e-10) return;
 
-                if (distanceSquared < 1e-10) {
-                    double circleDist = obj->radius + this->radius - distance;
-                    if(this->position.x > obj->position.x) {
-                        this->position.x += circleDist / 2.0;
-                        obj->position.x -= circleDist / 2.0;
-                    }
-
-                    else {
-                        this->position.x -= circleDist / 2.0;
-                        obj->position.x += circleDist / 2.0;
-                    }
-
-                    if(this->position.y > obj->position.y) {
-                        this->position.y -= circleDist / 2.0;
-                        obj->position.y += circleDist / 2.0;
-                    }
-
-                    else {
-                        this->position.y += circleDist / 2.0;
-                        obj->position.y -= circleDist / 2.0;
-                    }
-                    return;
-                };
-
-                // Formula della collisione elastica 2D:
-                // v1' = v1 - (2*m2 / (m1+m2)) * (<v1-v2, x1-x2> / |x1-x2|²) * (x1-x2)
                 double factor1 = (2.0 * obj->mass / sumM) * (dotProduct / distanceSquared);
-                this->velocity = this->velocity - deltaPos * factor1;
+                this->velocity += this->velocity - deltaPos * factor1;
 
-                // Per l'altro oggetto, inverti i delta
                 Vec2 deltaPos2 = obj->position - this->position;
                 Vec2 deltaVel2 = obj->velocity - this->velocity;
                 double dotProduct2 = deltaVel2.x * deltaPos2.x + deltaVel2.y * deltaPos2.y;
 
                 double factor2 = (2.0 * this->mass / sumM) * (dotProduct2 / distanceSquared);
-                obj->velocity = obj->velocity - deltaPos2 * factor2;
-
-                std::cout << "this: " << this->velocity.x << ", " << this->velocity.y << "\n";
-                std::cout << "obj: " << obj->velocity.x << ", " << obj->velocity.y << "\n";
+                obj->velocity += obj->velocity - deltaPos2 * factor2;
             }
         }
     }

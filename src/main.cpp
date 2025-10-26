@@ -5,6 +5,25 @@
 
 #include <chrono>
 
+TQuadrant find_boudaries(const std::vector<Object>& objs) {
+    TQuadrant boudaries;
+    for(auto obj : objs) {
+        if(obj.getPosition().x > boudaries.max_x) {
+            boudaries.max_x = obj.getPosition().x;
+        }
+        if(obj.getPosition().y > boudaries.max_y) {
+            boudaries.max_y = obj.getPosition().y;
+        }
+        if(obj.getPosition().x < boudaries.min_x) {
+            boudaries.min_x = obj.getPosition().x;
+        }
+        if(obj.getPosition().y < boudaries.min_y) {
+            boudaries.min_y = obj.getPosition().y;
+        }
+    }
+    return boudaries;
+}
+
 const int maxSimSpeed = 80;
 
 int main() {
@@ -31,8 +50,6 @@ int main() {
     int i = 0, simSpeed = 1;
     bool obj_focus = true;
 
-
-
     auto start = std::chrono::high_resolution_clock::now();
     auto end = std::chrono::high_resolution_clock::now();
 
@@ -57,10 +74,10 @@ int main() {
 
         if (obj_focus && objs.size() > 0) {
             Vec2 focusPos = objs[i].getPosition();
-            cameraOffset = focusPos; // Aggiorna l'offset della camera
+            cameraOffset = focusPos;
             glTranslated(-focusPos.x, -focusPos.y, 0);
         } else {
-            cameraOffset = Vec2(0.0, 0.0); // Reset quando non segui nessuno
+            cameraOffset = Vec2(0.0, 0.0);
         }
 
         if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS && simSpeed <= maxSimSpeed - 1) {
@@ -74,7 +91,7 @@ int main() {
             break; 
         }
         for(int ii = 0; ii < simSpeed; ii++) {
-            TQuadrant quad(-screenWidth * 3, -screenHeight * 3, screenWidth * 3, screenHeight * 3);
+            TQuadrant quad = find_boudaries(objs);
             BHTree tree(quad);
             for (auto& obj : objs) {
                 if (!obj.getDeleteStatus()) {
@@ -89,7 +106,6 @@ int main() {
                     active_objs.push_back(&obj);
                 }
             }
-
             for (auto* obj : active_objs) {
                 obj->UpdatePos(tree);
                 obj->check_should_delete(active_objs);

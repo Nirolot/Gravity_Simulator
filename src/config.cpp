@@ -41,17 +41,13 @@ void cursor_position_callback(GLFWwindow* window, double xpos, double ypos) {
     lastMouseY = ypos;
 }
 
-// Funzione per convertire coordinate schermo in coordinate mondo
 Vec2 screenToWorld(double screenX, double screenY) {
-    // Converti coordinate pixel in coordinate normalizzate [-1, 1]
     double ndcX = (2.0 * screenX / screenWidth) - 1.0;
     double ndcY = 1.0 - (2.0 * screenY / screenHeight);
     
-    // Applica la trasformazione inversa dello zoom e della proiezione
     double viewWidth = screenWidth / zoom;
     double viewHeight = screenHeight / zoom;
     
-    // La formula corretta: prendi lo spazio visibile e aggiungi l'offset
     double worldX = ndcX * (viewWidth / 2.0) + cameraOffset.x;
     double worldY = ndcY * (viewHeight / 2.0) + cameraOffset.y;
     
@@ -64,7 +60,6 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
             glfwGetWindowUserPointer(window)
         );
         
-        // Converti le coordinate del mouse in coordinate del mondo
         Vec2 worldPos = screenToWorld(lastMouseX, lastMouseY);
         
         std::uniform_real_distribution<> v(0.0, 300.0);
@@ -77,6 +72,6 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         double massa = mass(rd);
         int raggio = radius(rd);
         
-        objs->push_back(Object(worldPos, vel, raggio, massa, col));
+        objs->push_back(Object(worldPos, {0.0, 0.0}, raggio, massa, col));
     }
 }

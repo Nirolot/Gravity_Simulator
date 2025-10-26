@@ -8,12 +8,15 @@ struct TQuadrant {
     double min_x, min_y, max_x, max_y;
     TQuadrant(double min_x, double min_y, double max_x, double max_y)
         : min_x(min_x), min_y(min_y), max_x(max_x), max_y(max_y) {}
+    TQuadrant() {
+        min_x = 0, min_y = 0, max_x = 0, max_y = 0;
+    }
 };
 
 class BHTree {
 private:
     TQuadrant coord_quad;               // Limiti del quadrante
-    Vec2 center_of_mass; // Centro di massa (x, y)
+    Vec2 center_of_mass;                // Centro di massa (x, y)
     double tot_mass;                    // Massa totale
     Object* obj;                        // Oggetto (solo per nodi foglia), può essere nullptr
     bool is_leaf;                       // True se il nodo è una foglia
